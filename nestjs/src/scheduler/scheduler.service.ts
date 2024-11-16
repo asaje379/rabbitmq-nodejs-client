@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DiscoveryService, Reflector } from '@nestjs/core';
-import { InjectRmqConnector } from '../../connector/connector.constants';
-import { RmqConnection, RmqScheduler } from '@ensfierte/rmq-connector';
+import { RmqConnection, RmqScheduler } from '@asaje/rabbitmq-node-client';
 import {
   RMQ_SCHEDULER_PROCESS_KEY,
   RMQ_SCHEDULER_PROCESSOR_KEY,
 } from './scheduler.constant';
+import { InjectRmqConnector } from '../connector/connector.constants';
 
 @Injectable()
 export class RmqSchedulerService {

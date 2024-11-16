@@ -20,6 +20,7 @@ export class RmqListener {
     options: ListenerOptions = {
       persist: false,
       type: 'direct',
+      asWorker: false,
     },
   ) {
     this.connection.onMonted(async () => {
@@ -42,6 +43,10 @@ export class RmqListener {
         queueOptions,
       );
       channel.bindQueue(assertedQueue.queue, exchange, key);
+
+      if (options.asWorker) {
+        channel.prefetch(options.concurrency ?? 1);
+      }
 
       channel.consume(
         assertedQueue.queue,

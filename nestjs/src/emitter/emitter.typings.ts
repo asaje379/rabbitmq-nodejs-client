@@ -1,4 +1,4 @@
-import { EmitBody } from '@ensfierte/rmq-connector';
+import { EmitBody } from '@asaje/rabbitmq-node-client';
 
 export type RmqEmitOptions<T> = {
   listener: string;

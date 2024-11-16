@@ -15,6 +15,7 @@ export class RmqServiceListener {
     options: ListenerOptions = {
       persist: false,
       type: 'direct',
+      asWorker: false,
     },
   ) {
     if (this.listener) {
@@ -35,7 +36,16 @@ export class RmqServiceListener {
   }
 
   listen<T>(key: string, service: T) {
-    this.use(key, service, { persist: true, type: 'direct' });
+    this.use(key, service, { persist: true, type: 'direct', asWorker: false });
+  }
+
+  execute<T>(key: string, service: T, concurrency = 1) {
+    this.use(key, service, {
+      persist: true,
+      type: 'direct',
+      asWorker: true,
+      concurrency,
+    });
   }
 
   broadcast<T>(key: string, service: T) {

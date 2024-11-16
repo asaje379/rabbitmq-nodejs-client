@@ -68,11 +68,13 @@ export class RmqRunner {
     const config = RmqRunner.fns[name].config;
 
     config.attempts = 1;
-    config.timeout = options.initialTimeout;
-    config.backoffFactor = options.backoffFactor;
+    config.timeout = options.initialTimeout ?? 5000;
+    config.backoffFactor = options.backoffFactor ?? 1;
     config.maxAttempts = options.maxAttempts ?? 100;
 
-    if (options.runBeforeFirstTimeout) {
+    const firstExecution = options.runBeforeFirstTimeout ?? true;
+
+    if (firstExecution) {
       try {
         await fn(options.args);
         return;

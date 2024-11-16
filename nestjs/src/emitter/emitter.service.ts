@@ -1,12 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectRmqConnector } from '../../connector/connector.constants';
 import {
   EmitBody,
   RequestBody,
   RmqConnection,
   RmqEmitter,
-} from '@ensfierte/rmq-connector';
+} from '@asaje/rabbitmq-node-client';
 import { RmqEmitOptions } from './emitter.typings';
+import { InjectRmqConnector } from '../connector/connector.constants';
 
 @Injectable()
 export class RmqEmitterService {

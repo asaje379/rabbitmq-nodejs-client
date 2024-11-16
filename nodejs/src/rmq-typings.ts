@@ -28,7 +28,18 @@ export type MessageProto<T> = {
   error?: Error;
 };
 
-export type ListenerOptions = RmqOptions;
+export type ListenerOptions = RmqOptions & {
+  /**
+   * If `asWorker` is set to true, channel.prefetch will be used.
+   */
+  asWorker?: boolean;
+
+  /**
+   * If `concurrency` is set, the concurrency value will be used as argument for channel.prefetch.
+   * `concurrency` is ignored is `asWorker`is set to false
+   */
+  concurrency?: number;
+};
 
 export type SchedulerOptions<T, D> = {
   /**
@@ -68,22 +79,22 @@ export type RunnerOptions<T> = {
   /**
    * Initial timeout value in milliseconds
    */
-  initialTimeout: number;
+  initialTimeout?: number;
 
   /**
    * When setted to false, the function is called after the initial timeout
    */
-  runBeforeFirstTimeout: boolean;
+  runBeforeFirstTimeout?: boolean;
 
   /**
    * The exponential backoff factor
    */
-  backoffFactor: number;
+  backoffFactor?: number;
 
   /**
    * The maximum number of the function retry. Default setted to 100
    */
-  maxAttempts: number;
+  maxAttempts?: number;
 
   /**
    * The name of the pre-registered function

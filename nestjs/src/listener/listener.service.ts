@@ -4,8 +4,8 @@ import {
   RMQ_LISTENER_PROCESS_KEY,
   RMQ_LISTENER_PROCESSOR_KEY,
 } from './listener.constant';
-import { RmqConnection, RmqServiceListener } from '@ensfierte/rmq-connector';
-import { InjectRmqConnector } from '../../connector/connector.constants';
+import { RmqConnection, RmqServiceListener } from '@asaje/rabbitmq-node-client';
+import { InjectRmqConnector } from '../connector/connector.constants';
 
 @Injectable()
 export class RmqListenerService implements OnModuleInit {
