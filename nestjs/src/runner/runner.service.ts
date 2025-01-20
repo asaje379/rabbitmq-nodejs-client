@@ -8,8 +8,8 @@ import {
 } from './runner.constant';
 
 @Injectable()
-export class RunnerService {
-  private logger = new Logger(RunnerService.name);
+export class RmqRunnerService {
+  private logger = new Logger('RmqRunnerService');
   private runner: RmqRunner;
 
   constructor(

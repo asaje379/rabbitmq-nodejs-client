@@ -9,7 +9,7 @@ import { InjectRmqConnector } from '../connector/connector.constants';
 
 @Injectable()
 export class RmqListenerService implements OnModuleInit {
-  private logger = new Logger(RmqListenerService.name);
+  private logger = new Logger('RmqListenerService');
 
   constructor(
     private readonly discoveryService: DiscoveryService,

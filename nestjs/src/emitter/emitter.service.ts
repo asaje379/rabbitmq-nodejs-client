@@ -11,7 +11,7 @@ import { InjectRmqConnector } from '../connector/connector.constants';
 @Injectable()
 export class RmqEmitterService {
   private emitter: RmqEmitter;
-  private logger = new Logger(RmqEmitterService.name);
+  private logger = new Logger('RmqEmitterService');
 
   constructor(@InjectRmqConnector() private connector: RmqConnection) {
     this.emitter = new RmqEmitter(connector);
