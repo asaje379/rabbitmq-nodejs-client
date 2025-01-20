@@ -6,7 +6,6 @@ import { RmqEmitterService } from '../emitter/emitter.service';
 import { RmqListenerService } from '../listener/listener.service';
 import { RmqSchedulerService } from '../scheduler/scheduler.service';
 import { RmqRunnerService } from '../runner';
-import { DiscoveryService } from '@nestjs/core';
 
 @Module({})
 export class RmqConnectorModule {
@@ -14,6 +13,10 @@ export class RmqConnectorModule {
     return {
       module: RmqConnectorModule,
       providers: [
+        {
+          provide: 'RmqDiscoveryService',
+          useClass: config.discoveryService,
+        },
         {
           provide: RMQ_CONNECTOR_CONFIG,
           useFactory: async () => {
@@ -29,7 +32,6 @@ export class RmqConnectorModule {
         RmqListenerService,
         RmqSchedulerService,
         RmqRunnerService,
-        DiscoveryService,
       ],
       exports: [
         RmqEmitterService,
