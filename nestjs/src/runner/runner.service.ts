@@ -21,36 +21,38 @@ export class RmqRunnerService {
   }
 
   async onModuleInit() {
-    const providers = this.discoveryService.getProviders();
+    if (this.discoveryService) {
+      const providers = this.discoveryService.getProviders();
 
-    for (const provider of providers) {
-      if (!provider.metatype) continue;
+      for (const provider of providers) {
+        if (!provider.metatype) continue;
 
-      const queueName = this.reflector.get(
-        RMQ_RUNNER_PROCESSOR_KEY,
-        provider.metatype,
-      );
-      if (queueName) {
-        this.logger.log('RmqScheduler service found');
-
-        const instance = provider.instance;
-        const methods = Object.getOwnPropertyNames(
-          Object.getPrototypeOf(instance),
+        const queueName = this.reflector.get(
+          RMQ_RUNNER_PROCESSOR_KEY,
+          provider.metatype,
         );
+        if (queueName) {
+          this.logger.log('RmqScheduler service found');
 
-        for (const methodName of methods) {
-          const actionName = this.reflector.get(
-            RMQ_RUNNER_PROCESS_KEY,
-            instance[methodName],
+          const instance = provider.instance;
+          const methods = Object.getOwnPropertyNames(
+            Object.getPrototypeOf(instance),
           );
-          if (actionName) {
-            this.runner.register({
-              name: actionName,
-              fn: instance[methodName].bind(instance),
-            });
-            this.logger.log(
-              `${actionName} registered. ${methodName} will be used.`,
+
+          for (const methodName of methods) {
+            const actionName = this.reflector.get(
+              RMQ_RUNNER_PROCESS_KEY,
+              instance[methodName],
             );
+            if (actionName) {
+              this.runner.register({
+                name: actionName,
+                fn: instance[methodName].bind(instance),
+              });
+              this.logger.log(
+                `${actionName} registered. ${methodName} will be used.`,
+              );
+            }
           }
         }
       }

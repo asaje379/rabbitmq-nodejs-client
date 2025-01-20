@@ -18,36 +18,38 @@ export class RmqListenerService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    const providers = this.discoveryService.getProviders();
+    if (this.discoveryService) {
+      const providers = this.discoveryService.getProviders();
 
-    for (const provider of providers) {
-      if (!provider.metatype) continue;
+      for (const provider of providers) {
+        if (!provider.metatype) continue;
 
-      const queueName = this.reflector.get(
-        RMQ_LISTENER_PROCESSOR_KEY,
-        provider.metatype,
-      );
-      if (queueName) {
-        this.logger.log(`Rmq listener service found: ${queueName}`);
-        const listener = new RmqServiceListener(this.connector);
-
-        const instance = provider.instance;
-        const methods = Object.getOwnPropertyNames(
-          Object.getPrototypeOf(instance),
+        const queueName = this.reflector.get(
+          RMQ_LISTENER_PROCESSOR_KEY,
+          provider.metatype,
         );
+        if (queueName) {
+          this.logger.log(`Rmq listener service found: ${queueName}`);
+          const listener = new RmqServiceListener(this.connector);
 
-        for (const methodName of methods) {
-          const actionName = this.reflector.get(
-            RMQ_LISTENER_PROCESS_KEY,
-            instance[methodName],
+          const instance = provider.instance;
+          const methods = Object.getOwnPropertyNames(
+            Object.getPrototypeOf(instance),
           );
-          if (actionName) {
-            listener.use(queueName, {
-              [actionName]: instance[methodName].bind(instance),
-            });
-            this.logger.log(
-              `Start listening on queue ${queueName}, the action ${actionName} using ${methodName} method`,
+
+          for (const methodName of methods) {
+            const actionName = this.reflector.get(
+              RMQ_LISTENER_PROCESS_KEY,
+              instance[methodName],
             );
+            if (actionName) {
+              listener.use(queueName, {
+                [actionName]: instance[methodName].bind(instance),
+              });
+              this.logger.log(
+                `Start listening on queue ${queueName}, the action ${actionName} using ${methodName} method`,
+              );
+            }
           }
         }
       }
