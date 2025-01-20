@@ -8,7 +8,9 @@ import { RmqListenerService } from '../listener/listener.service';
 import { RmqSchedulerService } from '../scheduler/scheduler.service';
 import { RmqRunnerService } from '../runner';
 
-@Module({})
+@Module({
+  providers: [DiscoveryService],
+})
 export class RmqConnectorModule {
   static forRootAsync(config: RmqConnectorModuleConfig): DynamicModule {
     return {
@@ -29,14 +31,12 @@ export class RmqConnectorModule {
         RmqListenerService,
         RmqSchedulerService,
         RmqRunnerService,
-        DiscoveryService,
       ],
       exports: [
         RmqEmitterService,
         RmqListenerService,
         RmqSchedulerService,
         RmqRunnerService,
-        DiscoveryService,
       ],
     };
   }
