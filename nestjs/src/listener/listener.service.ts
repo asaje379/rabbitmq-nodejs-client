@@ -12,7 +12,6 @@ export class RmqListenerService implements OnModuleInit {
   private logger = new Logger('RmqListenerService');
 
   constructor(
-    @Inject(DiscoveryService)
     private readonly discoveryService: DiscoveryService,
     private readonly reflector: Reflector,
     @InjectRmqConnector() private connector: RmqConnection,
