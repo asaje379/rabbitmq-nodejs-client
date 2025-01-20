@@ -2,15 +2,12 @@ import { DynamicModule, Logger, Module } from '@nestjs/common';
 import { RMQ_CONNECTOR_CONFIG } from './connector.constants';
 import { RmqConnection } from '@asaje/rabbitmq-node-client';
 import { RmqConnectorModuleConfig } from './connector.typings';
-import { DiscoveryService } from '@nestjs/core';
 import { RmqEmitterService } from '../emitter/emitter.service';
 import { RmqListenerService } from '../listener/listener.service';
 import { RmqSchedulerService } from '../scheduler/scheduler.service';
 import { RmqRunnerService } from '../runner';
 
-@Module({
-  providers: [DiscoveryService],
-})
+@Module({})
 export class RmqConnectorModule {
   static forRootAsync(config: RmqConnectorModuleConfig): DynamicModule {
     return {

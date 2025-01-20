@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { DiscoveryService, Reflector } from '@nestjs/core';
 import {
   RMQ_LISTENER_PROCESS_KEY,
@@ -12,12 +12,14 @@ export class RmqListenerService implements OnModuleInit {
   private logger = new Logger('RmqListenerService');
 
   constructor(
+    @Inject(DiscoveryService)
     private readonly discoveryService: DiscoveryService,
     private readonly reflector: Reflector,
     @InjectRmqConnector() private connector: RmqConnection,
   ) {}
 
   async onModuleInit() {
+    console.log('-----------> discovery service:', this.discoveryService);
     if (this.discoveryService) {
       const providers = this.discoveryService.getProviders();
 
