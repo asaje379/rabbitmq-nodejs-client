@@ -8,9 +8,7 @@ import { RmqSchedulerService } from '../scheduler/scheduler.service';
 import { RmqRunnerService } from '../runner';
 import { DiscoveryService } from '@nestjs/core';
 
-@Module({
-  providers: [DiscoveryService],
-})
+@Module({})
 export class RmqConnectorModule {
   static forRootAsync(config: RmqConnectorModuleConfig): DynamicModule {
     return {
@@ -31,6 +29,7 @@ export class RmqConnectorModule {
         RmqListenerService,
         RmqSchedulerService,
         RmqRunnerService,
+        DiscoveryService,
       ],
       exports: [
         RmqEmitterService,
