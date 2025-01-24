@@ -2,18 +2,21 @@ import { RmqConnection } from './rmq-connection';
 import { RmqScheduler } from './rmq-scheduler';
 import { RunnerOptions, SchedulerRegisterOptions } from './rmq-typings';
 
+type RmqRunnerConfig = {
+  attempts: number;
+  timeout: number;
+  backoffFactor: number;
+  maxAttempts: number;
+};
+
 export class RmqRunner {
   private scheduler: RmqScheduler | null = null;
   private static fns: Record<
     string,
     {
       fn: Function;
-      config: {
-        attempts: number;
-        timeout: number;
-        backoffFactor: number;
-        maxAttempts: number;
-      };
+      config: RmqRunnerConfig;
+      args: any;
     }
   > = {};
 
@@ -25,18 +28,21 @@ export class RmqRunner {
     RmqRunner.fns[name] = {
       fn,
       config: { attempts: 1, backoffFactor: 1, maxAttempts: 100, timeout: 0 },
+      args: null,
     };
     this.scheduler?.register({
       name,
-      fn: async () => {
+      fn: async ({ args, config }: { args: any; config: RmqRunnerConfig }) => {
         const func = RmqRunner.fns[name].fn;
+
+        console.log({ func, args, config });
         try {
           if (func) {
-            await func();
+            await func(args);
             return;
           }
         } catch (error) {
-          this.innerRun(name, {});
+          this.innerRun(name, { args, config });
         }
       },
     });
@@ -47,19 +53,36 @@ export class RmqRunner {
     delete RmqRunner.fns[name];
   }
 
-  private innerRun<T>(name: string, args: T) {
-    const config = RmqRunner.fns[name].config;
+  private innerRun<T>(
+    name: string,
+    {
+      args,
+      config,
+    }: {
+      args: T;
+      config: RmqRunnerConfig;
+    },
+  ) {
     config.attempts++;
     config.timeout = config.timeout * config.backoffFactor;
     if (config.attempts >= config.maxAttempts) {
       return;
     }
 
-    this.scheduler?.schedule({
+    console.log('inner-run', {
+      config,
       in: config.timeout,
       fn: name,
       args,
     });
+
+    setTimeout(() => {
+      this.scheduler?.schedule({
+        in: config.timeout,
+        fn: name,
+        args: { args, config },
+      });
+    }, 10);
   }
 
   async run<T>(options: RunnerOptions<T>) {
@@ -80,6 +103,8 @@ export class RmqRunner {
         return;
       } catch (error) {}
     }
-    this.innerRun(name, options.args);
+    setTimeout(() => {
+      this.innerRun(name, { args: options.args, config });
+    }, 10);
   }
 }

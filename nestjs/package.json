@@ -1,6 +1,6 @@
 {
   "name": "@asaje/nestjs-rabbitmq-node-client",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Rabbitmq client for nestjs applications, wrapper around the nodejs client",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
